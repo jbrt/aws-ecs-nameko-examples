@@ -40,5 +40,6 @@ locals {
   tags = {
     Terraform   = "true"
     Environment = "dev"
+    Project     = "Nameko-Examples-on-ECS"
   }
 }

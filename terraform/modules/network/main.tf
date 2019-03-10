@@ -24,14 +24,10 @@ module "vpc" {
 }
 
 # Create a local domain name for services registration
-# (maybe will be swapped to ECS discovery later btw)
+# (using AWS service discovery instead of AWS Route53 directly)
 
-resource "aws_route53_zone" "private_zone" {
-  name = "${var.domain_name}"
-
-  vpc {
-    vpc_id = "${module.vpc.vpc_id}"
-  }
-
-  tags = "${var.tags}"
+resource "aws_service_discovery_private_dns_namespace" "private_zone" {
+  name        = "${var.domain_name}"
+  description = "Private DNS zone for auto-discovery feature"
+  vpc         = "${module.vpc.vpc_id}"
 }
