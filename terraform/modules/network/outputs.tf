@@ -1,0 +1,1 @@
+# Defines resources accessibles from the outside
