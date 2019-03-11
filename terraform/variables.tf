@@ -20,6 +20,12 @@ variable "project_name" {
   default = "nameko-examples"
 }
 
+# ECS / ECR
+
+variable "repository_name" {
+  default = "nameko-repo"
+}
+
 # CloudWatch variables
 
 variable "log_retention" {
