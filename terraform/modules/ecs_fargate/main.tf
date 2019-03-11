@@ -17,6 +17,33 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.project_name}-cluster"
 }
 
+# IAM
+
+data "aws_iam_policy" "task_role_policy" {
+  arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+data "aws_iam_policy_document" "trust_policy" {
+  statement {
+    effect = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "Service"
+      identifiers = ["ecs.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ecs_role" {
+  name               = "ecs_role"
+  assume_role_policy = "${data.aws_iam_policy_document.trust_policy.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach-ecs" {
+  role      = "${aws_iam_role.ecs_role.name}"
+  policy_arn = "${data.aws_iam_policy.task_role_policy.arn}"
+}
+
 # Creation of the Task Definitions
 
 module "td_rabbitmq" {
@@ -40,6 +67,16 @@ resource "aws_ecs_task_definition" "rabbitmq" {
   container_definitions    = "${module.td_rabbitmq.json}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
+  cpu                      = "256"
+  memory                   = "512"
+  #task_role_arn            = "${aws_iam_role.ecs_role.arn}"
+  execution_role_arn       = "${aws_iam_role.ecs_role.arn}"
 }
-# TODO : before creating a Fargate Task definition it's mandatory to use 
-# (or use) an IAM role with CloudWatch rights
+
+resource "aws_ecs_service" "rabbitmq-service" {
+  name = "rabbitmq"
+  cluster = "${aws_ecs_cluster.cluster.id}"
+  task_definition = "${aws_ecs_task_definition.rabbitmq.family}:${max("${aws_ecs_task_definition.rabbitmq.revision}")}"
+  desired_count = 1
+  # iam_role = "${aws_iam_role.ecs_role.name}"
+}
