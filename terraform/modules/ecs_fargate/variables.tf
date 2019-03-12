@@ -9,6 +9,19 @@ variable "repository_name" {
   description = "Name of the ECR repository"
 }
 
+# VPC 
+
+variable "vpc_id" {
+  description = "VPC ID"
+}
+
+
+variable "private_subnets_id" {
+  description = "List of Private Subnets"
+  type = "list"
+}
+
+
 # Tags
 
 variable "tags" {

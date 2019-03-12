@@ -73,10 +73,36 @@ resource "aws_ecs_task_definition" "rabbitmq" {
   execution_role_arn       = "${aws_iam_role.ecs_role.arn}"
 }
 
+resource "aws_security_group" "ecs_service" {
+  vpc_id      = "${var.vpc_id}"
+  name        = "${var.project_name}-ecs-service-sg"
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5672
+    to_port     = 5672
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = "${var.tags}"
+}
+
+
 resource "aws_ecs_service" "rabbitmq-service" {
   name = "rabbitmq"
   cluster = "${aws_ecs_cluster.cluster.id}"
   task_definition = "${aws_ecs_task_definition.rabbitmq.family}:${max("${aws_ecs_task_definition.rabbitmq.revision}")}"
   desired_count = 1
   # iam_role = "${aws_iam_role.ecs_role.name}"
+  network_configuration {
+    security_groups = ["${aws_security_group.ecs_service.id}"]
+    subnets         = "${var.private_subnets_id}"
+  }
 }
