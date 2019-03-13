@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "trust_policy" {
     actions = ["sts:AssumeRole"]
     principals {
       type = "Service"
-      identifiers = ["ecs.amazonaws.com"]
+      identifiers = ["ecs.amazonaws.com", "ecs-tasks.amazonaws.com"]
     }
   }
 }
@@ -45,6 +45,7 @@ resource "aws_iam_role_policy_attachment" "attach-ecs" {
 }
 
 # Creation of the Task Definitions
+# TODO: Change this task definition
 
 module "td_rabbitmq" {
   source  = "cloudposse/ecs-container-definition/aws"
@@ -52,6 +53,7 @@ module "td_rabbitmq" {
 
   container_image = "rabbitmq:3.7.12-alpine"
   container_name  = "rabbitmq"
+  log_driver      = "awslogs"
 
   port_mappings = [
     {
@@ -69,7 +71,7 @@ resource "aws_ecs_task_definition" "rabbitmq" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  #task_role_arn            = "${aws_iam_role.ecs_role.arn}"
+  task_role_arn            = "${aws_iam_role.ecs_role.arn}"
   execution_role_arn       = "${aws_iam_role.ecs_role.arn}"
 }
 
@@ -100,9 +102,10 @@ resource "aws_ecs_service" "rabbitmq-service" {
   cluster = "${aws_ecs_cluster.cluster.id}"
   task_definition = "${aws_ecs_task_definition.rabbitmq.family}:${max("${aws_ecs_task_definition.rabbitmq.revision}")}"
   desired_count = 1
+  launch_type     = "FARGATE"
   # iam_role = "${aws_iam_role.ecs_role.name}"
   network_configuration {
     security_groups = ["${aws_security_group.ecs_service.id}"]
-    subnets         = "${var.private_subnets_id}"
+    subnets         = ["${var.private_subnets_id}"]
   }
 }
