@@ -22,6 +22,6 @@ module "services" {
   log_group          = "${module.ecs.log_group}"
   tags               = "${local.tags}"
 
-  redis_host         = "${module.redis.host}"
-  redis_password     = "${random_string.auth_token.result}"
+  redis_host         = "${lookup(aws_elasticache_cluster.redis.cache_nodes[0], "address")}"
+  redis_password     = ""
 }
