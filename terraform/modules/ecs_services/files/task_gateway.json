@@ -1,11 +1,11 @@
 [
   {
-    "name": "rabbitmq",
+    "name": "gateway_task",
     "image": "${image}",
     "portMappings": [
       {
-        "containerPort": 5672,
-        "hostPort": 5672
+        "containerPort": 8000,
+        "hostPort": 8000
       }
     ],
     "memory": 300,
@@ -18,7 +18,16 @@
         "awslogs-stream-prefix": "${log_prefix}"
       }
     },
-    "environment": []
+    "environment": [
+      {
+        "name": "RABBIT_HOST",
+        "value": "${rabbit_host}"
+      },
+      {
+        "name": "RABBIT_PORT",
+        "value": "${rabbit_port}"
+      }
+    ]
   }
 ]
   
