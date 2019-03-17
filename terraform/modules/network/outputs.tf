@@ -11,3 +11,7 @@ output "private_subnets" {
 output "service_discovery" {
   value = "${aws_service_discovery_private_dns_namespace.private_zone.id}"
 }
+
+output "elasticache_subnets" {
+  value = "${module.vpc.elasticache_subnets}"
+}

@@ -42,6 +42,16 @@ variable "ecs_discovery_id" {
   description = "ID of the discovery service"
 }
 
+# Redis
+
+variable "redis_host" {
+  description = "URL of the Redis host"
+}
+
+variable "redis_password" {
+  description = "Auth token for Redis"  
+}
+
 # Tags
 
 variable "tags" {

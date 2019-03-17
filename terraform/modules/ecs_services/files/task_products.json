@@ -1,0 +1,45 @@
+[
+  {
+    "name": "product_task",
+    "image": "${image}",
+    "portMappings": [
+      {
+        "containerPort": 8000,
+        "hostPort": 8000
+      }
+    ],
+    "memory": 300,
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${log_prefix}"
+      }
+    },
+    "environment": [
+      {
+        "name": "RABBIT_HOST",
+        "value": "${rabbit_host}"
+      },
+      {
+        "name": "RABBIT_PORT",
+        "value": "${rabbit_port}"
+      },
+      {
+        "name": "REDIS_HOST",
+        "value": "${redis_host}"
+      },
+      {
+        "name": "REDIS_PORT",
+        "value": "${redis_port}"
+      },
+      {
+        "name": "REDIS_PASSWORD",
+        "value": "${redis_password}"
+      }
+    ]
+  }
+]
+  

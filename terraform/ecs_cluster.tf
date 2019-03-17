@@ -21,4 +21,7 @@ module "services" {
   ecs_discovery_id   = "${module.vpc.service_discovery}"
   log_group          = "${module.ecs.log_group}"
   tags               = "${local.tags}"
+
+  redis_host         = "${module.redis.host}"
+  redis_password     = "${random_string.auth_token.result}"
 }
