@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "trust_policy" {
 }
 
 resource "aws_iam_role" "ecs_role" {
-  name               = "ecs_role"
+  name               = "NamekoECSTaskExecution"
   assume_role_policy = "${data.aws_iam_policy_document.trust_policy.json}"
 }
 
@@ -42,4 +42,3 @@ resource "aws_iam_role_policy_attachment" "attach-ecs" {
   role      = "${aws_iam_role.ecs_role.name}"
   policy_arn = "${data.aws_iam_policy.task_role_policy.arn}"
 }
-

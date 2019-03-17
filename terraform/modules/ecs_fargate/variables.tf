@@ -15,12 +15,10 @@ variable "vpc_id" {
   description = "VPC ID"
 }
 
-
 variable "private_subnets_id" {
   description = "List of Private Subnets"
   type = "list"
 }
-
 
 # Tags
 

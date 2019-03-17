@@ -1,4 +1,8 @@
 # Creation of the RabbitMQ service
+# - Creating a task definition
+# - Creating a Security Group
+# - Creating an entry into the ECS discovery
+# - Creating an ECS Service
 
 # Create a simple task definition
 data "template_file" "task_file" {
@@ -23,9 +27,10 @@ resource "aws_ecs_task_definition" "rabbitmq" {
   task_role_arn            = "${var.ecs_role}"
 }
 
+# Security Group
 resource "aws_security_group" "ecs_service" {
   vpc_id = "${var.vpc_id}"
-  name   = "rabbitmq-ecs-service-sg"
+  name   = "Nameko-rabbitmq-service"
 
   egress {
     from_port   = 0
@@ -44,11 +49,12 @@ resource "aws_security_group" "ecs_service" {
   tags = "${var.tags}"
 }
 
+# Discovery
 resource "aws_service_discovery_service" "discovery_rabbitmq" {
   name = "rabbitmq"
 
   dns_config {
-    namespace_id = "${var.ecs_discovery_arn}"
+    namespace_id = "${var.ecs_discovery_id}"
 
     dns_records {
       ttl  = 10
@@ -63,6 +69,7 @@ resource "aws_service_discovery_service" "discovery_rabbitmq" {
   }
 }
 
+# ECS Service
 resource "aws_ecs_service" "rabbitmq-service" {
   name            = "rabbitmq"
   cluster         = "${var.ecs_cluster}"

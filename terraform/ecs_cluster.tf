@@ -11,14 +11,14 @@ module "ecs" {
 
 module "services" {
   source             = "./modules/ecs_services"
+  region             = "${var.region}"
   project_name       = "${var.project_name}"
   repository_name    = "${var.repository_name}"
   vpc_id             = "${module.vpc.vpc_id}"
   private_subnets_id = ["${module.vpc.private_subnets}"]
-  tags               = "${local.tags}"
   ecs_cluster        = "${module.ecs.ecs_cluster}"
   ecs_role           = "${module.ecs.ecs_role}"
+  ecs_discovery_id   = "${module.vpc.service_discovery}"
   log_group          = "${module.ecs.log_group}"
-  region             = "${var.region}"
-  ecs_discovery_arn  = "${module.vpc.service_discovery}"
+  tags               = "${local.tags}"
 }
