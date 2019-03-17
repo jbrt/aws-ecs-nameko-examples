@@ -12,7 +12,7 @@ data "template_file" "task_products" {
     region      = "${var.region}"
     image       = "nameko/nameko-example-products"
     log_group   = "${var.log_group}"
-    log_prefix  = "gateway"
+    log_prefix  = "products"
     rabbit_host = "rabbitmq.nameko.local"
     rabbit_port = 5672
     redis_host  = "${var.redis_host}"

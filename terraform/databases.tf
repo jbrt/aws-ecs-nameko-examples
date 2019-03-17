@@ -1,8 +1,15 @@
 # We'll spawn here the needed databases
 
 # Redis (needed for Nameko Product)
+
+resource "aws_security_group" "redis_sg" {
+  vpc_id = "${module.vpc.vpc_id}"
+  name   = "RedisSGForNamekoExamples"
+  tags   = "${local.tags}"
+}
+
 resource "random_string" "auth_token" {
-  length = 64
+  length  = 64
   special = false
 }
 
@@ -12,8 +19,7 @@ module "redis" {
   namespace          = "general"
   name               = "redis"
   stage              = "dev"
-  #zone_id            = "${module.vpc.service_discovery}"
-  security_groups    = ["${module.services.redis_sg}"]
+  security_groups    = ["${aws_security_group.redis_sg.id}"]
   auth_token         = "${random_string.auth_token.result}"
   vpc_id             = "${module.vpc.vpc_id}"
   subnets            = "${module.vpc.elasticache_subnets}"
@@ -21,11 +27,17 @@ module "redis" {
   cluster_size       = "1"
   instance_type      = "cache.t2.micro"
   engine_version     = "4.0.10"
-
-  # alarm_cpu_threshold_percent  = "${var.cache_alarm_cpu_threshold_percent}"
-  # alarm_memory_threshold_bytes = "${var.cache_alarm_memory_threshold_bytes}"
-  apply_immediately = "true"
+  apply_immediately  = "true"
 
   availability_zones = "${var.availability_zones}"
   automatic_failover = "false"
+}
+
+resource "aws_security_group_rule" "redis_allow_products_service" {
+  type                     = "ingress"
+  to_port                  = 6379
+  protocol                 = "-1"
+  source_security_group_id = "${module.services.redis_sg}"
+  from_port                = 6379
+  security_group_id        = "${aws_security_group.redis_sg.id}"
 }
