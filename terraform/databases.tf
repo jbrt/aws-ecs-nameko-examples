@@ -67,6 +67,7 @@ resource "aws_db_instance" "postgresql" {
   username             = "superuser"
   password             = "${random_string.auth_token.result}"
   parameter_group_name = "default.postgres9.6"
+  skip_final_snapshot  = true
   tags = "${local.tags}"
 }
 
