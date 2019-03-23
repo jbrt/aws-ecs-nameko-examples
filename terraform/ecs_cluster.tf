@@ -24,4 +24,8 @@ module "services" {
 
   redis_host         = "${lookup(aws_elasticache_cluster.redis.cache_nodes[0], "address")}"
   redis_password     = ""
+
+  db_user            = "superuser"
+  db_host            = "${aws_db_instance.postgresql.address}"
+  db_password        = "${random_string.auth_token.result}"
 }
