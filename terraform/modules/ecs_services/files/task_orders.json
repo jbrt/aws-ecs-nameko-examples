@@ -1,0 +1,45 @@
+[
+  {
+    "name": "orders_task",
+    "image": "${image}",
+    "portMappings": [
+      {
+        "containerPort": 8000,
+        "hostPort": 8000
+      }
+    ],
+    "memory": 300,
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${log_prefix}"
+      }
+    },
+    "environment": [
+      {
+        "name": "RABBIT_HOST",
+        "value": "${rabbit_host}"
+      },
+      {
+        "name": "RABBIT_PORT",
+        "value": "${rabbit_port}"
+      },
+      {
+        "name": "DB_HOST",
+        "value": "${db_host}"
+      },
+      {
+        "name": "DB_USER",
+        "value": "${db_user}"
+      },
+      {
+        "name": "DB_PASSWORD",
+        "value": "${db_password}"
+      }
+    ]
+  }
+]
+  

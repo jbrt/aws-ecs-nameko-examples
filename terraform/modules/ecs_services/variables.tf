@@ -52,6 +52,20 @@ variable "redis_password" {
   description = "Auth token for Redis"  
 }
 
+# PostGreSQL
+
+variable "db_host" {
+  description = "URL of the PostGreSQL DB"
+}
+
+variable "db_user" {
+  description = "User of the DB"
+}
+
+variable "db_password" {
+  description = "Password of the DB"
+}
+
 # Tags
 
 variable "tags" {

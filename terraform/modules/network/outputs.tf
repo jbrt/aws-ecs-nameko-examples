@@ -15,3 +15,7 @@ output "service_discovery" {
 output "elasticache_subnets" {
   value = "${module.vpc.elasticache_subnets}"
 }
+
+output "database_subnets" {
+  value = "${module.vpc.database_subnets}"
+}
